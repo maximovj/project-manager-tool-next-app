@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id    Int   @id @default(autoincrement())
+  email   String    @unique()
+  name    String?
+  todos   Todo[]
+  projects  Project[]
+
+  createdAt   DateTime    @map("created_at") @default(now())
+  updatedAt   DateTime    @map("updated_at") @updatedAt()
+
+  @@map("users")
+}
+
+model Todo {
+  id    Int   @id @default(autoincrement()) @map("id")
+  title   String  @map("todo_title")
+  desc    String  @map("todo_description")
+  done    Boolean   @map("todo_done") @default(false)
+  
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+
+  createdAt   DateTime    @map("created_at") @default(now())
+  updatedAt   DateTime    @map("updated_at") @updatedAt()
+ 
+ @@map("todos")
+}
+
+model Project {
+  id    Int   @id @default(autoincrement())
+  title   String  @map("project_title")
+  description   String    @map("project_description")
+  slug    String   @map("project_slug")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int   @map("user_id")
+
+  createdAt   DateTime    @map("created_at") @default(now())
+  updatedAt   DateTime    @map("updated_at") @updatedAt()
+
+  @@map("projects")
+}
