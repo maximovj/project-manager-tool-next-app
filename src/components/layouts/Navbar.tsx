@@ -49,10 +49,10 @@ export function Navbar() {
 
           {/* Botones Desktop */}
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/login">
+            <Link href="/auth/login">
               <Button variant="ghost" size="sm" className="cursor-pointer">Iniciar sesión</Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/auth/sign-up">
               <Button size="sm" className="bg-blue-600 hover:bg-blue-700 cursor-pointer">
                 Registrarse
               </Button>
@@ -84,12 +84,12 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="border-t my-2 pt-3 flex flex-col gap-2">
-                <Link href="/login">
+                <Link href="/auth/login">
                   <Button variant="ghost" className="justify-start cursor-pointer">
                     Iniciar sesión
                   </Button>
                 </Link>
-                <Link href="/signup">
+                <Link href="/auth/sign-up">
                   <Button className="bg-blue-600 justify-start cursor-pointer">
                     Registrarse
                   </Button>
