@@ -1,4 +1,16 @@
-import { cn } from "@/lib/utils"
+'use client'
+
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+
+import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
+
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import Link from 'next/link'
+import Image from "next/image"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -8,18 +20,52 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import Image from "next/image"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const supabase = createClient()
+    setIsLoading(true)
+    setError(null)
+
+    if (password !== repeatPassword) {
+      setError('Passwords do not match')
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/protected`,
+        },
+      })
+      if (error) throw error
+      router.push('/auth/sign-up-success')
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form onSubmit={handleSignUp} className="p-6 md:p-8">
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Crea tu cuenta</h1>
@@ -34,6 +80,8 @@ export function SignupForm({
                   type="email"
                   placeholder="ejemplo@correo.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <FieldDescription>
                   Usaremos esto para contactarte. No compartiremos tu correo
@@ -44,13 +92,27 @@ export function SignupForm({
                 <Field className="grid grid-cols-2 gap-4">
                   <Field>
                     <FieldLabel htmlFor="password">Contraseña</FieldLabel>
-                    <Input id="password" type="password" required />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Escribe tú contraseña"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
                   </Field>
                   <Field>
                     <FieldLabel htmlFor="confirm-password">
                       Confirmar contraseña
                     </FieldLabel>
-                    <Input id="confirm-password" type="password" required />
+                    <Input 
+                      id="confirm-password"
+                      type="password" 
+                      placeholder="Confima tú contraseña"
+                      required
+                      value={repeatPassword}
+                      onChange={(e) => setRepeatPassword(e.target.value)}
+                    />
                   </Field>
                 </Field>
                 <FieldDescription>
@@ -58,7 +120,10 @@ export function SignupForm({
                 </FieldDescription>
               </Field>
               <Field>
-                <Button type="submit">Crear cuenta</Button>
+                {error && <p className="text-sm text-red-500">{error}</p>}
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? 'Creando una cuenta...' : 'Crear cuenta'}
+                </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 O continuar con
@@ -93,7 +158,7 @@ export function SignupForm({
                 </Button>
               </Field>
               <FieldDescription className="text-center">
-                ¿Ya tienes una cuenta? <a href="#">Inicia sesión</a>
+                ¿Ya tienes una cuenta? <Link href="/auth/login">Inicia sesión</Link>
               </FieldDescription>
             </FieldGroup>
           </form>
