@@ -125,6 +125,8 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    font-family: var(--fonts-monserrat), system-ui, -apple-system, sans-serif;
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
   }
 }
