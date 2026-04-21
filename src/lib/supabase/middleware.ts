@@ -53,7 +53,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Autenticado y quiere ir a login/register
-  if (user && isPublic && pathname !== '/') {
+  if (user && isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
 
