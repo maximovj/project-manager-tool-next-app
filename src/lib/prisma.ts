@@ -1,10 +1,10 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client";
 
-const connectionString = process.env.NEXT_PUBLIC_DIRECT_URL as string;
+const connectionString = process.env.NEXT_PUBLIC_SUPABASE_DIRECT_CONNECTION as string;
 
 if (!connectionString) {
-  throw new Error("NEXT_PUBLIC_DIRECT_URL environment variable is not defined");
+  throw new Error("NEXT_PUBLIC_SUPABASE_DIRECT_CONNECTION environment variable is not defined");
 }
 
 const adapter = new PrismaPg({ connectionString });
