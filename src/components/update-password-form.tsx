@@ -51,7 +51,7 @@ export function UpdatePasswordForm({ className, ...props }: React.ComponentProps
       
       // Redirigir después de 2 segundos para mostrar el mensaje de éxito
       setTimeout(() => {
-        router.push('/protected')
+        router.push('/auth/login')
       }, 2000)
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'Ocurrió un error')
@@ -80,7 +80,7 @@ export function UpdatePasswordForm({ className, ...props }: React.ComponentProps
               </p>
             </div>
             <Button variant="outline" className="w-full" asChild>
-              <a href="/protected">
+              <a href="/dashboard">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Ir al panel ahora
               </a>
@@ -223,7 +223,7 @@ export function UpdatePasswordForm({ className, ...props }: React.ComponentProps
               </div>
 
               <Button variant="ghost" className="w-full" asChild>
-                <a href="/protected">
+                <a href="/auth/login">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Cancelar y volver
                 </a>
